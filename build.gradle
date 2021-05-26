@@ -1,0 +1,62 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'maven'
+}
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+    maven { url = uri('https://jitpack.io') }
+    mavenLocal()
+}
+
+dependencies {
+    implementation 'org.xerial:sqlite-jdbc:3.34.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    compileOnly 'net.skeagle:VRNLib:1.0c'
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'resources'
+        }
+    }
+}
+
+task updatePlugins {
+    doLast {
+        copy {
+            from 'build/libs'
+            into 'C:/Users/Skeagle/Documents/VRN Network/Dev 1.16.4/plugins'
+        }
+    }
+}
+
+task deploy(dependsOn: ["jar", "updatePlugins"]) {
+    updatePlugins.mustRunAfter jar
+}
+
+group = 'net.skeagle'
+version = '1.0.1'
+description = 'VRNparkour'
+sourceCompatibility = '1.8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        filter ReplaceTokens, tokens: [version: version]
+    }
+}

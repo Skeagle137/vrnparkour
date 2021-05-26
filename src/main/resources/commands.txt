@@ -1,0 +1,80 @@
+vrnparkour,vrnpk {
+    help Information about the plugin.
+    permission vrnparkour.admin
+    reload {
+        help Reload all messages and the config.
+        hook reload
+        permission vrnparkour.admin
+    }
+}
+
+parkour,pk {
+    help Create and manage parkours.
+    permission vrnparkour.parkour.help
+    exit {
+        help Exit the parkour you are in.
+        hook exit
+        user player
+    }
+    edit parkour:parkour* {
+        help Edit the specified parkour.
+        hook edit
+        permission vrnparkour.parkour.edit
+        user player
+    }
+    stopedit {
+        help Stop editing a parkour.
+        permission vrnparkour.parkour.edit
+        hook stopedit
+        user player
+    }
+    record parkour:parkour* {
+        help See your personal best time for the specified parkour.
+        hook record
+        user player
+    }
+    leaderboard,lb parkour:parkour* {
+        help See the best times for the specified parkour.
+        user player
+        hook leaderboard
+    }
+    create string:name* {
+        help Create a parkour.
+        hook createparkour
+        permission vrnparkour.parkour.create
+        user player
+    }
+    list {
+        help See the list of all parkours.
+        hook listparkours
+        permission vrnparkour.parkour.list
+    }
+    settings parkour:parkour* {
+        help Change settings for the specified parkour.
+        hook parkoursettings
+        permission vrnparkour.parkour.settings
+        user player
+    }
+}
+
+snake {
+    help Create and manage snakes.
+    permission vrnparkour.snake.help
+    create string:name* {
+        help Create a snake.
+        permission vrnparkour.snake.create
+        hook createsnake
+        user player
+    }
+    list {
+        help See the list of all snakes.
+        permission vrnparkour.snake.list
+        hook listsnakes
+    }
+    settings snake:snake* {
+        help Change settings for the specified snake.
+        hook snakesettings
+        permission vrnparkour.snake.settings
+        user player
+    }
+}

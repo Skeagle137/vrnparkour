@@ -1,0 +1,40 @@
+prefix: &8[&e&lVRNParkour&r&8]&7
+error: &cSomething went wrong, please try again later.
+reloaded: &aMessages and config reloaded.
+noSnakes: &cThere are no snakes to list yet.
+invalidPath: &cInvalid path. Make sure each block only has 2 surrounding blocks and the track is a loop. Invalid block: &l%location%
+standOnBlock: &cMake sure you stand on a block when making a snake.
+newSnake: &aCreated new track. To change its settings, run /snake settings %name%. To add a snake, place a block anywhere on the track.
+snakeGuiTitle: &8&lSnake settings for %name%
+clickSnakeHead: &cPlease make sure to click the head of a snake.
+snakeHeadAdded: &aAdded new snake head. Right click to increase length. Shift-right click to decrease length.
+snakeNameInUse: &cThe name %name% is already in use.
+calculationError: &cError calculating path. Make sure your path is not connected to anything else.
+snakeListHeader: &a&lList of snakes:
+snakeHeadRemoved: &aSnake head removed.
+snakeHeadIncrease: &aSnake length increased.
+snakeHeadDecrease: &aSnake length decreased.
+startedEdit: &aYou started editing parkour %name%. &aTo stop editing, run &o/parkour stopedit.
+stoppedEdit: &aYou are no longer editing a parkour.
+parkourExit: &cYou left the parkour.
+parkourStart: &aYou started the parkour. Run &o/parkour exit&a to leave the parkour.
+alreadyActive: &cYou cannot edit a parkour while it is active.
+parkourFinish: &aYou reached the finish! Total time: &e%time%
+alreadyEditing: &cYou are already editing a parkour.
+editActionBar: &aYou are editing parkour %name%
+newParkour: &aCreated new parkour. To start editing this parkour, run /parkour edit %name%.
+parkourGuiTitle: &8&lParkour settings for %name%
+parkourBestTime: &aYour personal best on this parkour is %time%.
+parkourReadyFail: &cUnable to change the ready state of a parkour while its being edited. The parkour must contain a start and end location.
+checkpoint: &e&lCheckpoint &b&l%checkpoint%
+parkourNameInUse: &cThe name %name% is already in use.
+parkourTimeNotSet: &cYou don't have a time set yet.
+parkourListHeader: &aList of parkours:
+checkpointEnd: &a&lFinish
+checkpointStart: &a&lStart
+parkourFinishNewRecord: &aYou reached the finish and broke your previous record! New record: &e&l%time%
+leaderboardEntry: &a#%entry% %name% - %time%
+checkpointReached: &aYou reached checkpoint %checkpoint%
+checkpointSkipped: &cYou missed a previous checkpoint.
+leaderboardHeader: &aParkour %parkour% leaderboard:
+failBlockGuiTitle: &8&lFail blocks for %name%
