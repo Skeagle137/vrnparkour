@@ -25,11 +25,11 @@ public class ParkourCheckpoint {
     }
 
     public String serialize() {
-        return Utils.serializeLocation(getLocation()) + "!!" + getHologram().getId().toString();
+        return Utils.serializeLocation(getLocation()) + " " + getHologram().getId().toString();
     }
 
     public static ParkourCheckpoint Deserialize(final String s) {
-        String[] split = s.split("!!");
+        String[] split = s.split(" ");
         return new ParkourCheckpoint(Utils.deSerializeLocation(split[0]), VRNparkour.getInstance().getHologramManager().getHologram(UUID.fromString(split[1])));
     }
 }

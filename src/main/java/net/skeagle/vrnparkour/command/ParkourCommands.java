@@ -45,7 +45,7 @@ public class ParkourCommands {
             sayNoPrefix(sender, Messages.msg("leaderboardEntry")
                     .replaceAll("%entry%", String.valueOf(n))
                     .replaceAll("%name%", Objects.requireNonNull(Bukkit.getOfflinePlayer(time.getKey()).getName()))
-                    .replaceAll("%time%", String.valueOf((long)time.getValue())));
+                    .replaceAll("%time%", parkour.getLeaderboard().formatTime(time.getValue())));
         }
     }
 

@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
 import net.skeagle.vrnlib.sql.SQLHelper;
 
-import java.lang.reflect.Type;
 import java.util.*;
 
 public class ParkourManager {
@@ -40,20 +39,23 @@ public class ParkourManager {
             final int failHeight = res.get(5);
             final ParkourCheckpoint start = (res.getString(6) == null) ? null : ParkourCheckpoint.Deserialize(res.getString(6));
             final ParkourCheckpoint end = (res.getString(7) == null) ? null : ParkourCheckpoint.Deserialize(res.getString(7));
-            Type type = new TypeToken<List<String>>() {
-            }.getType();
-            final List<String> list = gson.fromJson(res.getString(8), type);
+            final JsonArray json = gson.fromJson(res.getString(8), new TypeToken<JsonArray>() {
+            }.getType());
             List<ItemStack> failBlocks = new ArrayList<>();
-            list.forEach(s -> failBlocks.add(Utils.itemFromJson(s)));
-            final List<String> list2 = gson.fromJson(res.getString(9), type);
+            json.forEach(s -> {
+                System.out.println(s);
+                failBlocks.add(Utils.itemFromJson(s.getAsJsonObject().getAsString()));
+                System.out.println(Utils.itemFromJson(s.getAsJsonObject().getAsString()));
+            });
+            final List<String> list = gson.fromJson(res.getString(9), new TypeToken<List<String>>() {
+            }.getType());
             List<ParkourCheckpoint> checkpoints = new ArrayList<>();
-            list2.forEach(s -> checkpoints.add(ParkourCheckpoint.Deserialize(s)));
+            list.forEach(s -> checkpoints.add(ParkourCheckpoint.Deserialize(s)));
             final Parkour parkour = new Parkour(replace, failDetection, ready, failHeight, start, end, checkpoints, failBlocks);
             this.parkourList.add(parkour);
             Bukkit.getPluginManager().registerEvents(parkour, VRNparkour.getInstance());
-            Type type2 = new TypeToken<List<JsonObject>>() {
-            }.getType();
-            final List<JsonObject> times = gson.fromJson(res.getString(10), type2);
+            final JsonObject times = gson.fromJson(res.getString(10), new TypeToken<JsonObject>() {
+            }.getType());
             parkour.getLeaderboard().loadTimes(times);
         });
     }

@@ -3,7 +3,6 @@ package net.skeagle.vrnparkour.parkour;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,9 +16,10 @@ public class ParkourLeaderboard {
     }
 
     public void saveTime(final UUID uuid, final long n) {
-        if (this.times.containsKey(uuid))
+        if (this.times.containsKey(uuid)) {
             if (this.times.get(uuid) > n)
                 this.times.put(uuid, n);
+        }
         else
             this.times.put(uuid, n);
     }
@@ -30,8 +30,8 @@ public class ParkourLeaderboard {
         return json;
     }
 
-    public void loadTimes(List<JsonObject> list) {
-        list.forEach(json -> json.entrySet().forEach(entry -> this.saveTime(UUID.fromString(entry.getKey()), (entry.getValue()).getAsLong())));
+    public void loadTimes(JsonObject json) {
+        json.entrySet().forEach(entry -> this.saveTime(UUID.fromString(entry.getKey()), (entry.getValue()).getAsLong()));
     }
 
     public String formatTime(final long n) {

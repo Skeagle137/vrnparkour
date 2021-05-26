@@ -1,5 +1,6 @@
 package net.skeagle.vrnparkour.parkour;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.skeagle.vrnlib.commandmanager.Messages;
@@ -204,7 +205,6 @@ public class Parkour implements Listener {
                         longValue = 99999999999999L;
                     this.getLeaderboard().saveTime(player.getUniqueId(), n);
                     final long min = Math.min(n, longValue);
-                    System.out.println();
                     save();
                     if (min < longValue)
                         say(player, Messages.msg("parkourFinishNewRecord").replaceAll("%time%", this.getLeaderboard().formatTime(min)));
@@ -348,8 +348,8 @@ public class Parkour implements Listener {
             List<String> checkpointlist = new ArrayList<>();
             getCheckPoints().forEach(pk -> checkpointlist.add(pk.serialize()));
             List<JsonObject> failBlocks = new ArrayList<>();
-            final JsonObject json = new JsonObject();
-            getFailBlocks().forEach(block -> json.add("item", new JsonParser().parse(gson.toJson(block.serialize()))));
+            final JsonArray json = new JsonArray();
+            getFailBlocks().forEach(block -> json.add(gson.toJson(block.serialize())));
             db.execute("INSERT INTO parkour " +
                             "(name, failDetection, failHeight, ready, start, end, failBlocks, checkpoints, leaderboard) " +
                             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", getName(), getFailDetection().key(), getFailHeight(), isReady(),
