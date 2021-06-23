@@ -2,5 +2,6 @@ name: VRNparkour
 version: @version@
 main: net.skeagle.vrnparkour.VRNparkour
 author: Skeagle
-api-version: 1.16
+api-version: 1.17
 depend: [VRNLib]
+softdepend: [Multiverse-Core]

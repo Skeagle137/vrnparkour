@@ -3,12 +3,14 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id 'java'
     id 'idea'
+    id 'maven-publish'
 }
 
 group = 'net.skeagle'
 version = '1.1.1'
 description = 'VRNparkour'
-sourceCompatibility = 1.8
+sourceCompatibility = 16
+targetCompatibility = 16
 
 String mc = '1.17'
 
@@ -22,9 +24,9 @@ repositories {
 
 dependencies {
     implementation 'org.xerial:sqlite-jdbc:3.34.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.google.code.gson:gson:2.8.7'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
-    compileOnly 'net.skeagle:VRNLib:1.1e'
+    compileOnly 'net.skeagle:VRNLib:1.2a'
     compileOnly "org.spigotmc:spigot-api:${mc}-R0.1-SNAPSHOT"
 }
 
@@ -60,5 +62,16 @@ processResources {
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
     from(sourceSets.main.resources.srcDirs) {
         filter ReplaceTokens, tokens: [version: version]
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
     }
 }
