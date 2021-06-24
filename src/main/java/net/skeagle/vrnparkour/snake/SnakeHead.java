@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class SnakeHead {
 
-    private final transient Track track;
+    private final Track track;
     private ItemStack item;
     private int index;
     private int length;
@@ -20,11 +20,13 @@ public class SnakeHead {
     }
 
     public void move() {
-        Utils.setBlockType(this.track.getPath().get(this.getTailEnd(0)).getBlock(), this.track.getAirItem());
-        this.setIndex(this.track.getDirection() ? (this.getIndex() + 1) : (this.getIndex() - 1));
-        this.setIndex((this.getIndex() >= this.track.getPath().size()) ? 0 : this.getIndex());
-        this.setIndex((this.getIndex() < 0) ? (this.track.getPath().size() - 1) : this.getIndex());
-        Utils.setBlockType(this.track.getPath().get(this.getIndex()).getBlock(), this.getItem());
+        if (track.getPath().stream().allMatch(t -> t.getChunk().isLoaded())) {
+            Utils.setBlockType(this.track.getPath().get(this.getTailEnd(0)).getBlock(), this.track.getAirItem());
+            this.setIndex(this.track.getDirection() ? (this.getIndex() + 1) : (this.getIndex() - 1));
+            this.setIndex((this.getIndex() >= this.track.getPath().size()) ? 0 : this.getIndex());
+            this.setIndex((this.getIndex() < 0) ? (this.track.getPath().size() - 1) : this.getIndex());
+            Utils.setBlockType(this.track.getPath().get(this.getIndex()).getBlock(), this.getItem());
+        }
     }
 
     public int getTailEnd(final int n) {
