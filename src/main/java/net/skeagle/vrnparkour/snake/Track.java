@@ -67,7 +67,8 @@ public class Track implements Runnable, Listener {
             }
         }, 0L, 10L);
     }
-    
+
+    @Override
     public void run() {
         this.heads.forEach(SnakeHead::move);
     }
