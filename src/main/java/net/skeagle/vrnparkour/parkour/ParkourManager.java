@@ -2,12 +2,13 @@ package net.skeagle.vrnparkour.parkour;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import net.skeagle.vrnlib.itemutils.ItemUtils;
+import net.skeagle.vrnlib.misc.Task;
 import net.skeagle.vrnparkour.VRNparkour;
 import net.skeagle.vrnparkour.parkour.faildetection.FailDetection;
 import net.skeagle.vrnparkour.parkour.faildetection.FloorFailDetection;
 import net.skeagle.vrnparkour.parkour.faildetection.HeightFailDetection;
 import net.skeagle.vrnparkour.parkour.faildetection.ParkourFailDetection;
-import net.skeagle.vrnparkour.snake.SnakeHead;
 import net.skeagle.vrnparkour.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.ItemStack;
@@ -16,13 +17,11 @@ import net.skeagle.vrnlib.sql.SQLHelper;
 import java.util.*;
 
 public class ParkourManager {
-    private final Gson gson;
     private final List<Parkour> parkourList;
     private final List<FailDetection> failDetectionTypes;
 
     public ParkourManager() {
         this.parkourList = new ArrayList<>();
-        this.gson = Utils.gson;
         this.failDetectionTypes = new ArrayList<>();
         this.registerDetectionType(new FloorFailDetection());
         this.registerDetectionType(new ParkourFailDetection());
@@ -39,22 +38,18 @@ public class ParkourManager {
             final int failHeight = res.get(5);
             final ParkourCheckpoint start = (res.getString(6) == null) ? null : ParkourCheckpoint.Deserialize(res.getString(6));
             final ParkourCheckpoint end = (res.getString(7) == null) ? null : ParkourCheckpoint.Deserialize(res.getString(7));
-            final JsonArray json = gson.fromJson(res.getString(8), new TypeToken<JsonArray>() {
+            final JsonArray json = Utils.gson.fromJson(res.getString(8), new TypeToken<JsonArray>() {
             }.getType());
             List<ItemStack> failBlocks = new ArrayList<>();
-            json.forEach(s -> {
-                System.out.println(s);
-                failBlocks.add(Utils.itemFromJson(s.getAsJsonObject().getAsString()));
-                System.out.println(Utils.itemFromJson(s.getAsJsonObject().getAsString()));
-            });
-            final List<String> list = gson.fromJson(res.getString(9), new TypeToken<List<String>>() {
+            json.forEach(s -> failBlocks.add(ItemUtils.fromString(s.getAsJsonObject().getAsString())));
+            final List<String> list = Utils.gson.fromJson(res.getString(9), new TypeToken<List<String>>() {
             }.getType());
             List<ParkourCheckpoint> checkpoints = new ArrayList<>();
             list.forEach(s -> checkpoints.add(ParkourCheckpoint.Deserialize(s)));
             final Parkour parkour = new Parkour(replace, failDetection, ready, failHeight, start, end, checkpoints, failBlocks);
             this.parkourList.add(parkour);
             Bukkit.getPluginManager().registerEvents(parkour, VRNparkour.getInstance());
-            final JsonObject times = gson.fromJson(res.getString(10), new TypeToken<JsonObject>() {
+            final JsonObject times = Utils.gson.fromJson(res.getString(10), new TypeToken<JsonObject>() {
             }.getType());
             parkour.getLeaderboard().loadTimes(times);
         });
@@ -70,7 +65,7 @@ public class ParkourManager {
         final Parkour parkour = new Parkour(s);
         Bukkit.getPluginManager().registerEvents(parkour, VRNparkour.getInstance());
         this.parkourList.add(parkour);
-        parkour.save();
+        Task.asyncDelayed(parkour::save);
         return parkour;
     }
 

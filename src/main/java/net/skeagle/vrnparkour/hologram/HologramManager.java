@@ -24,14 +24,12 @@ public class HologramManager {
 
     private void load() {
         SQLHelper db = VRNparkour.getInstance().getDB();
-        Task.asyncDelayed(() -> {
-            SQLHelper.Results res = db.queryResults("SELECT * FROM hologram");
-            res.forEach(pk -> {
-                UUID id = UUID.fromString(res.getString(1));
-                String hologram = res.getString(2);
-                Location location = Utils.deSerializeLocation(res.get(3));
-                holograms.add(new Hologram(location, hologram, id));
-            });
+        SQLHelper.Results res = db.queryResults("SELECT * FROM hologram");
+        res.forEach(pk -> {
+            UUID id = UUID.fromString(res.getString(1));
+            String hologram = res.getString(2);
+            Location location = Utils.deSerializeLocation(res.get(3));
+            holograms.add(new Hologram(location, hologram, id));
         });
     }
 

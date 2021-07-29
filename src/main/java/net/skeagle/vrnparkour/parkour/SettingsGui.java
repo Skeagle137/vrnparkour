@@ -1,16 +1,18 @@
 package net.skeagle.vrnparkour.parkour;
 
 import net.skeagle.vrnlib.commandmanager.Messages;
+import net.skeagle.vrnlib.itemutils.ItemBuilder;
+import net.skeagle.vrnlib.itemutils.ItemUtils;
+import net.skeagle.vrnlib.misc.FormatUtils;
+import net.skeagle.vrnlib.misc.Task;
 import net.skeagle.vrnparkour.VRNparkour;
 import net.skeagle.vrnparkour.config.ConfigurableItem;
 import net.skeagle.vrnparkour.parkour.faildetection.FailDetection;
-import net.skeagle.vrnparkour.utils.ItemUtil;
 import net.skeagle.vrnparkour.utils.Utils;
 import net.skeagle.vrnparkour.utils.guiholders.FailblockGuiHolder;
 import net.skeagle.vrnparkour.utils.guiholders.SettingsGuiHolder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,7 +25,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.skeagle.vrnparkour.utils.Utils.color;
 import static net.skeagle.vrnparkour.utils.Utils.say;
 
 public class SettingsGui implements Listener {
@@ -54,16 +55,16 @@ public class SettingsGui implements Listener {
         this.delete = ConfigurableItem.DELETE_PARKOUR.get();
         final int height = this.parkour.getFailHeight();
         final int n = Math.min(height, 64);
-        failHeight = ItemUtil.genItem(ConfigurableItem.FAIL_HEIGHT.get("%height%", this.parkour.getFailHeight() + "")).amount((n > 0) ? n : 1).build();
+        failHeight = new ItemBuilder(ConfigurableItem.FAIL_HEIGHT.get("%height%", this.parkour.getFailHeight() + "")).setCount(n > 0 ? n : 1);
         final List<String> lore = new ArrayList<>();
         lore.add("");
         for (final FailDetection failDetection : VRNparkour.getInstance().getParkourManager().getFailDetectionTypes()) {
             if (this.parkour.getFailDetection().equals(failDetection))
-                lore.add(color("&a&l" + failDetection.key()));
+                lore.add(FormatUtils.color("&a&l" + failDetection.key()));
             else
-                lore.add(color("&a" + failDetection.key()));
+                lore.add(FormatUtils.color("&a" + failDetection.key()));
         }
-        failDetect = ItemUtil.genItem(ConfigurableItem.FAIL_DETECT.get()).lore(lore).build();
+        failDetect = new ItemBuilder(ConfigurableItem.FAIL_DETECT.get()).setLore((String[]) lore.toArray());
         this.gui.setItem(10, this.failHeight);
         this.gui.setItem(12, this.failDetect);
         this.gui.setItem(14, this.failBlocks);
@@ -78,7 +79,7 @@ public class SettingsGui implements Listener {
         final ItemStack currentItem = inventoryClickEvent.getCurrentItem();
         if (currentItem == null)
             return;
-        if (currentItem.equals(this.failHeight)) {
+        if (ItemUtils.compare(currentItem, this.failHeight)) {
             if (inventoryClickEvent.getClick() == ClickType.LEFT)
                 this.parkour.setFailHeight(this.parkour.getFailHeight() + 1);
             else if (inventoryClickEvent.getClick() == ClickType.RIGHT)
@@ -89,23 +90,23 @@ public class SettingsGui implements Listener {
                 this.parkour.setFailHeight(this.parkour.getFailHeight() - 10);
             inventoryClickEvent.setCancelled(true);
         }
-        if (currentItem.equals(this.failDetect)) {
+        if (ItemUtils.compare(currentItem, this.failDetect)) {
             int index = VRNparkour.getInstance().getParkourManager().getFailDetectionTypes().indexOf(this.parkour.getFailDetection());
             if (++index >= VRNparkour.getInstance().getParkourManager().getFailDetectionTypes().size())
                 index = 0;
             this.parkour.setFailDetection(VRNparkour.getInstance().getParkourManager().getFailDetectionTypes().get(index));
             inventoryClickEvent.setCancelled(true);
         }
-        if (currentItem.equals(this.failBlocks)) {
+        if (ItemUtils.compare(currentItem, this.failBlocks)) {
             inventoryClickEvent.getWhoClicked().openInventory(this.failBlocksGui);
             inventoryClickEvent.setCancelled(true);
         }
-        if (currentItem.equals(this.ready)) {
+        if (ItemUtils.compare(currentItem, this.ready)) {
             if (!this.parkour.setReady(!this.parkour.isReady()))
                 say(inventoryClickEvent.getWhoClicked(), Messages.msg("parkourReadyFail"));
             inventoryClickEvent.setCancelled(true);
         }
-        if (currentItem.equals(this.delete))
+        if (ItemUtils.compare(currentItem, this.delete))
             VRNparkour.getInstance().getParkourManager().deleteParkour(this.parkour);
         this.loadGui();
     }
@@ -113,7 +114,6 @@ public class SettingsGui implements Listener {
     @EventHandler
     public void inventoryClose(final InventoryCloseEvent inventoryCloseEvent) {
         if (!(inventoryCloseEvent.getInventory().getHolder() instanceof FailblockGuiHolder)) {
-            parkour.save();
             return;
         }
         final Parkour parkour = ((FailblockGuiHolder)inventoryCloseEvent.getInventory().getHolder()).getParkour();
@@ -129,7 +129,6 @@ public class SettingsGui implements Listener {
                     failBlocks.add(itemStack);
         }
         parkour.setFailBlocks(failBlocks);
-        parkour.save();
     }
 
     public void open(final Player player) {

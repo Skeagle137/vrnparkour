@@ -1,5 +1,6 @@
 package net.skeagle.vrnparkour.config;
 
+import net.skeagle.vrnlib.itemutils.ItemBuilder;
 import net.skeagle.vrnparkour.VRNparkour;
 import net.skeagle.vrnparkour.utils.Utils;
 import org.bukkit.Material;
@@ -38,7 +39,7 @@ public enum ConfigurableItem {
         for (int i = 0; i < array.length; i += 2)
             s = s.replaceAll(array[i], array[i + 1]);
         if (VRNparkour.config.getConfigurationSection("item." + this.name().toLowerCase()) == null)
-            return Utils.buildItemStack(this.type, this.amount, s, this.lore);
+            return new ItemBuilder(this.type).setCount(this.amount).setName(s).setLore(this.lore);
         return Utils.configToItem("item." + this.name().toLowerCase(), array);
     }
 }

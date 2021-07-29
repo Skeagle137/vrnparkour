@@ -1,6 +1,6 @@
 package net.skeagle.vrnparkour.snake;
 
-import net.skeagle.vrnparkour.VRNparkour;
+import net.skeagle.vrnparkour.config.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -33,7 +33,7 @@ public class BlockCrawler {
                 for (final int[] array : BlockCrawler.ADJ_LOC) {
                     final Location location2 = block.getLocation();
                     location2.add(array[0], array[1], array[2]);
-                    if (this.map.get(uuid).size() >= VRNparkour.config.getInt("maxPathSize"))
+                    if (this.map.get(uuid).size() >= Settings.maxPathSize)
                         throw new CrawlerOverflowException();
                     this.registerLocations(uuid, location2);
                 }

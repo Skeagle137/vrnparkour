@@ -2,7 +2,6 @@ package net.skeagle.vrnparkour.hologram;
 
 import net.skeagle.vrnparkour.VRNparkour;
 import net.skeagle.vrnparkour.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import net.skeagle.vrnlib.sql.SQLHelper;
@@ -55,12 +54,10 @@ public class Hologram {
 
     public void save() {
         SQLHelper db = VRNparkour.getInstance().getDB();
-        Bukkit.getScheduler().runTaskAsynchronously(VRNparkour.getInstance(), () -> {
-            db.execute("DELETE FROM hologram WHERE id = (?)", getId().toString());
-            db.execute("INSERT INTO hologram " +
-                    "(id, hologram, location) " +
-                    "VALUES (?, ?, ?)", getId().toString(), getHologram(), Utils.serializeLocation(this.getLoc()));
-        });
+        db.execute("DELETE FROM hologram WHERE id = (?)", getId().toString());
+        db.execute("INSERT INTO hologram " +
+                "(id, hologram, location) " +
+                "VALUES (?, ?, ?)", getId().toString(), getHologram(), Utils.serializeLocation(this.getLoc()));
     }
 }
 

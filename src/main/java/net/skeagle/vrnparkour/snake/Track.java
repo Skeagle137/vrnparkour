@@ -2,6 +2,7 @@ package net.skeagle.vrnparkour.snake;
 
 import com.google.gson.*;
 import net.skeagle.vrnlib.commandmanager.Messages;
+import net.skeagle.vrnlib.itemutils.ItemUtils;
 import net.skeagle.vrnlib.misc.Task;
 import net.skeagle.vrnparkour.VRNparkour;
 import net.skeagle.vrnparkour.utils.Utils;
@@ -252,11 +253,6 @@ public class Track implements Runnable, Listener {
                 final ItemStack clone = e.getPlayer().getEquipment().getItemInMainHand().clone();
                 final Material type = clone.getType();
                 final String lowerCase = type.name().toLowerCase();
-                try {
-                    Utils.gson.toJson(clone.serialize());
-                } catch (Exception ex) {
-                    return;
-                }
                 if (!type.isSolid() || !type.isBlock() || lowerCase.contains("door") || lowerCase.contains("plate") || lowerCase.contains("leaves") || lowerCase.contains("sign") || lowerCase.contains("banner") || lowerCase.contains("bed") || lowerCase.contains("coral") || lowerCase.contains("egg"))
                     return;
                 final int index = this.path.indexOf(clickedBlock.getLocation());
@@ -306,17 +302,15 @@ public class Track implements Runnable, Listener {
 
     public void save() {
         SQLHelper db = VRNparkour.getInstance().getDB();
-        Task.asyncDelayed(() -> {
-            db.execute("DELETE FROM snake WHERE name = (?)", name);
-            List<String> path = new ArrayList<>();
-            getPath().forEach(loc -> path.add(Utils.serializeLocation(loc)));
-            List<JsonObject> headlist = new ArrayList<>();
-            heads.forEach(h -> headlist.add(h.serialize()));
-            db.execute("INSERT INTO snake " +
-                            "(name, running, airItem, direction, speed, heads, path) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?)", getName(), isRunning(), gson.toJson(getAirItem().serialize()), getDirection(),
-                    getSpeed(), gson.toJson(headlist), gson.toJson(path));
-        });
+        db.execute("DELETE FROM snake WHERE name = (?)", name);
+        List<String> path = new ArrayList<>();
+        getPath().forEach(loc -> path.add(Utils.serializeLocation(loc)));
+        List<JsonObject> headlist = new ArrayList<>();
+        heads.forEach(h -> headlist.add(h.serialize()));
+        db.execute("INSERT INTO snake " +
+                        "(name, running, airItem, direction, speed, heads, path) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)", getName(), isRunning(), ItemUtils.toString(getAirItem()), getDirection(),
+                getSpeed(), gson.toJson(headlist), gson.toJson(path));
     }
 }
 

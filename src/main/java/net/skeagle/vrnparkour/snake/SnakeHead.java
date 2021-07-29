@@ -2,6 +2,7 @@ package net.skeagle.vrnparkour.snake;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.skeagle.vrnlib.itemutils.ItemUtils;
 import net.skeagle.vrnparkour.utils.Utils;
 import org.bukkit.inventory.ItemStack;
 
@@ -70,7 +71,7 @@ public class SnakeHead {
         final JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("index", getIndex());
         jsonObject.addProperty("length", getLength());
-        jsonObject.add("item", new JsonParser().parse(track.gson.toJson(getItem().serialize())));
+        jsonObject.addProperty("item", ItemUtils.toString(getItem()));
         return jsonObject;
     }
 }

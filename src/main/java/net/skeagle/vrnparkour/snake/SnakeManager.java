@@ -3,6 +3,8 @@ package net.skeagle.vrnparkour.snake;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import net.skeagle.vrnlib.itemutils.ItemUtils;
+import net.skeagle.vrnlib.misc.Task;
 import net.skeagle.vrnparkour.VRNparkour;
 import net.skeagle.vrnparkour.utils.Utils;
 import org.bukkit.Location;
@@ -37,7 +39,7 @@ public class SnakeManager {
         res.forEach(pk -> {
             final String name = res.getString(2);
             final boolean running = res.getBoolean(3);
-            final ItemStack item = Utils.itemFromJson(res.getString(4));
+            final ItemStack item = ItemUtils.fromString(res.getString(4));
             final boolean direction = res.getBoolean(5);
             final int speed = res.get(6);
             Type type = new TypeToken<List<String>>() {
@@ -50,7 +52,7 @@ public class SnakeManager {
             }.getType();
             final List<JsonObject> list2 = gson.fromJson(res.getString(7), type2);
             List<SnakeHead> heads = new ArrayList<>();
-            list2.forEach(json -> heads.add(new SnakeHead(json.get("index").getAsInt(), Utils.itemFromJson(json, "item"), json.get("length").getAsInt(), track)));
+            list2.forEach(json -> heads.add(new SnakeHead(json.get("index").getAsInt(), ItemUtils.fromString(json.get("item").getAsString()), json.get("length").getAsInt(), track)));
             heads.forEach(track::addHead);
             track.reset();
             track.getSettings().loadGui();
@@ -72,7 +74,7 @@ public class SnakeManager {
     public void createTrack(final String s, final List<Location> list) {
         Track track = new Track(s, list);
         this.tracks.add(track);
-        track.save();
+        Task.asyncDelayed(track::save);
     }
 
     public Track getTrack(final String s) {

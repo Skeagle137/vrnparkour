@@ -1,6 +1,7 @@
 package net.skeagle.vrnparkour.snake;
 
 import net.skeagle.vrnlib.commandmanager.Messages;
+import net.skeagle.vrnlib.itemutils.ItemUtils;
 import net.skeagle.vrnparkour.VRNparkour;
 import net.skeagle.vrnparkour.config.ConfigurableItem;
 import net.skeagle.vrnparkour.utils.Utils;
@@ -63,7 +64,7 @@ public class SettingsGui implements Listener {
         final ItemStack currentItem = inventoryClickEvent.getCurrentItem();
         if (currentItem == null)
             return;
-        if (currentItem.equals(this.airBlock)) {
+        if (ItemUtils.compare(currentItem, this.airBlock)) {
             if (inventoryClickEvent.getAction() == InventoryAction.DROP_ONE_SLOT) {
                 this.track.setAirItem(new ItemStack(Material.AIR));
                 this.track.reset();
@@ -86,11 +87,12 @@ public class SettingsGui implements Listener {
                 this.track.reset();
             }
         }
-        if (currentItem.equals(this.direction) && inventoryClickEvent.getAction() == InventoryAction.PICKUP_ALL)
+        if (ItemUtils.compare(currentItem, this.direction) && inventoryClickEvent.getAction() == InventoryAction.PICKUP_ALL) {
             this.track.setDirection(!this.track.getDirection());
-        if (currentItem.equals(this.stop) && inventoryClickEvent.getAction() == InventoryAction.PICKUP_ALL)
+        }
+        if (ItemUtils.compare(currentItem, this.stop) && inventoryClickEvent.getAction() == InventoryAction.PICKUP_ALL)
             this.track.stop();
-        if (currentItem.equals(this.delete)) {
+        if (ItemUtils.compare(currentItem, this.delete)) {
             if (inventoryClickEvent.getAction() == InventoryAction.PICKUP_HALF) {
                 VRNparkour.getInstance().getSnakeManager().deleteTrack(this.track, false);
                 inventoryClickEvent.getWhoClicked().closeInventory();
@@ -102,9 +104,9 @@ public class SettingsGui implements Listener {
                 return;
             }
         }
-        if (currentItem.equals(this.start) && inventoryClickEvent.getAction() == InventoryAction.PICKUP_ALL)
+        if (ItemUtils.compare(currentItem, this.start) && inventoryClickEvent.getAction() == InventoryAction.PICKUP_ALL)
             this.track.start();
-        if (currentItem.equals(this.speed)) {
+        if (ItemUtils.compare(currentItem, this.speed)) {
             if (inventoryClickEvent.getClick() == ClickType.LEFT)
                 this.track.setSpeed(this.track.getSpeed() - 1);
             else if (inventoryClickEvent.getClick() == ClickType.RIGHT)
@@ -120,7 +122,7 @@ public class SettingsGui implements Listener {
 
     @EventHandler
     public void inventoryClose(final InventoryCloseEvent e) {
-        track.save();
+        Task.asyncDelayed(track::save);
     }
 
     public void open(final Player p) {

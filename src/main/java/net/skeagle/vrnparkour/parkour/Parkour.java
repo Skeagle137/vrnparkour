@@ -2,9 +2,8 @@ package net.skeagle.vrnparkour.parkour;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import net.skeagle.vrnlib.commandmanager.Messages;
-import net.skeagle.vrnlib.misc.Task;
+import net.skeagle.vrnlib.itemutils.ItemUtils;
 import net.skeagle.vrnparkour.VRNparkour;
 import net.skeagle.vrnparkour.parkour.faildetection.FailDetection;
 import org.bukkit.Bukkit;
@@ -343,19 +342,17 @@ public class Parkour implements Listener {
 
     public void save() {
         SQLHelper db = VRNparkour.getInstance().getDB();
-        Task.asyncDelayed(() -> {
-            db.execute("DELETE FROM parkour WHERE name = (?)", getName());
-            List<String> checkpointlist = new ArrayList<>();
-            getCheckPoints().forEach(pk -> checkpointlist.add(pk.serialize()));
-            List<JsonObject> failBlocks = new ArrayList<>();
-            final JsonArray json = new JsonArray();
-            getFailBlocks().forEach(block -> json.add(gson.toJson(block.serialize())));
-            db.execute("INSERT INTO parkour " +
-                            "(name, failDetection, failHeight, ready, start, end, failBlocks, checkpoints, leaderboard) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", getName(), getFailDetection().key(), getFailHeight(), isReady(),
-                    ((this.start != null) ? this.start.serialize() : null), ((this.end != null) ? this.end.serialize() : null),
-                    gson.toJson(failBlocks), gson.toJson(checkpointlist), gson.toJson(leaderboard.serialize()));
-        });
+        db.execute("DELETE FROM parkour WHERE name = (?)", getName());
+        List<String> checkpointlist = new ArrayList<>();
+        getCheckPoints().forEach(pk -> checkpointlist.add(pk.serialize()));
+        List<JsonObject> failBlocks = new ArrayList<>();
+        final JsonArray json = new JsonArray();
+        getFailBlocks().forEach(block -> json.add(ItemUtils.toString(block)));
+        db.execute("INSERT INTO parkour " +
+                        "(name, failDetection, failHeight, ready, start, end, failBlocks, checkpoints, leaderboard) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", getName(), getFailDetection().key(), getFailHeight(), isReady(),
+                ((this.start != null) ? this.start.serialize() : null), ((this.end != null) ? this.end.serialize() : null),
+                gson.toJson(failBlocks), gson.toJson(checkpointlist), gson.toJson(leaderboard.serialize()));
     }
 
     public void delete() {
