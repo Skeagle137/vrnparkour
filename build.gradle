@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'net.skeagle'
-version = '1.2.0'
+version = '1.2.1'
 description = 'VRNparkour'
 sourceCompatibility = 16
 targetCompatibility = 16
